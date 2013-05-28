@@ -125,6 +125,24 @@ class mod_facetoface_session_form extends moodleform {
         $mform->setType('details_editor', PARAM_RAW);
         $mform->addHelpButton('details_editor', 'details', 'facetoface');
 
+        //AB
+        $mform->addElement('checkbox', 'disableoption', get_string('disableoption','facetoface'));
+        $mform->setType('disableoption', PARAM_INT);
+        $mform->setDefault('disableoption', 0);
+        $mform->addHelpButton('disableoption', 'disableoption', 'facetoface');
+        
+        
+        $disableperiod = array();
+        for ($i=0; $i<=365; $i += 1) {
+                $disableperiod[$i] = $i;
+        }
+        $mform->addElement('select', 'disablenewenrolldays', get_string('disablenewenrolldays', 'facetoface'), $disableperiod);
+        $mform->setType('disablenewenrolldays', PARAM_INT);
+        $mform->setDefault('disablenewenrolldays', 0);
+        $mform->disabledIf('disablenewenrolldays', 'disableoption');
+        $mform->addHelpButton('disablenewenrolldays', 'disablenewenrolldays', 'facetoface');
+
+
         // Choose users for trainer roles
         $rolenames = facetoface_get_trainer_roles();
 

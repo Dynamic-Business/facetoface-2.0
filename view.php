@@ -173,6 +173,7 @@ function print_session_list($courseid, $facetofaceid, $location) {
     }
 
     // Upcoming sessions
+    // AB
     echo $OUTPUT->heading(get_string('upcomingsessions', 'facetoface'));
     if (empty($upcomingarray) && empty($upcomingtbdarray)) {
         print_string('noupcoming', 'facetoface');
@@ -185,11 +186,12 @@ function print_session_list($courseid, $facetofaceid, $location) {
     if ($editsessions) {
         echo html_writer::tag('p', html_writer::link(new moodle_url('sessions.php', array('f' => $facetofaceid)), get_string('addsession', 'facetoface')));
     }
-
+			
     // Previous sessions
     if (!empty($previousarray)) {
         echo $OUTPUT->heading(get_string('previoussessions', 'facetoface'));
-        echo $f2f_renderer->print_session_list_table($customfields, $previousarray, $viewattendees, $editsessions);
+        // AB
+	echo $f2f_renderer->print_session_list_table($customfields, $previousarray, $viewattendees, $editsessions);
     }
 }
 

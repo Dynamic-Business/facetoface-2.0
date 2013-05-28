@@ -8,7 +8,8 @@ class mod_facetoface_renderer extends plugin_renderer_base {
      * Builds session list table given an array of sessions
      */
     public function print_session_list_table($customfields, $sessions, $viewattendees, $editsessions) {
-        $output = '';
+        global $DB;
+	$output = '';
 
         $tableheader = array();
         foreach ($customfields as $field) {
@@ -32,6 +33,7 @@ class mod_facetoface_renderer extends plugin_renderer_base {
         $table = new html_table();
         $table->summary = get_string('previoussessionslist', 'facetoface');
         $table->head = $tableheader;
+	$table->width = '100%';
         $table->data = array();
 
         foreach ($sessions as $session) {
@@ -138,8 +140,38 @@ class mod_facetoface_renderer extends plugin_renderer_base {
                 $options .= html_writer::link('cancelsignup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('cancelbooking', 'facetoface'), array('title' => get_string('cancelbooking', 'facetoface')));
             }
             elseif (!$sessionstarted and !$bookedsession) {
-                $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
-            }
+                //$options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
+		//AB
+                //$options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
+		
+		$currenttime = new DateTime(date('c', time()));
+                $start = $DB->get_record('facetoface_sessions_dates', array('sessionid'=>$session->id));
+		//echo ($start->timestart); // AB
+		//var_dump($start); // AB
+		//echo("sessionid ="); // AB
+                $starttime = new DateTime(date('c', $start->timestart));
+                $interval = $starttime->diff($currenttime);
+                $diffdays =  $interval->format('%a');
+                $disableddaysDB = $DB->get_record('facetoface_sessions', array('id'=>$session->id));
+                $disableddays = $disableddaysDB->disablenewenrolldays;
+                $disableoption = $disableddaysDB->disableoption;
+                
+                if($disableoption)
+                {
+                        if($diffdays > $disableddays)
+                        {
+                                $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
+                        }
+                         
+                }
+                else
+                {
+                        $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
+                }
+		
+
+
+	    }
             if (empty($options)) {
                 $options = get_string('none', 'facetoface');
             }
@@ -163,7 +195,7 @@ class mod_facetoface_renderer extends plugin_renderer_base {
         }
 
         $output .= html_writer::table($table);
-
+       
         return $output;
     }
 }
