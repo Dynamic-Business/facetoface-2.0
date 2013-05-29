@@ -696,12 +696,10 @@ The **Venue** displays on the \'Sign-up\' page, the \'View all sessions\' page a
 
 $string['waitlistedmessage_help'] = 'This message is sent out whenever users sign-up for a wait-listed session.';
 
-// AB
 $string['disableautoenroll'] = 'Disable Auto Enrollment';
 $string['disableautoenroll_help'] = 'Disable the waitlist auto enrollment option when within X days of a session';
 $string['disablewithindays'] = 'Days before a session starts';
 $string['disablewithindays_help'] = 'Set how many days before a session starts';
-
 
 $string['disableoption'] = 'Disable New Enrollment';
 $string['disableoption_help'] = 'Disable a new enrollment option when within X days of a session';

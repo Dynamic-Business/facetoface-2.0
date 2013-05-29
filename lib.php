@@ -566,7 +566,6 @@ function facetoface_update_attendees($session) {
 
     // Get course
     $course = $DB->get_record('course', array('id' => $facetoface->course));
-	//print_error($session->id);
     // Update user status'
     $users = facetoface_get_attendees($session->id);
 
@@ -597,18 +596,14 @@ function facetoface_update_attendees($session) {
                     $booked++;
                 }
             }
-			//print_error('session id: '.$session->id);
-            // AB
-            $currenttime = new DateTime(date('c', time())); // AB
-            $start = $DB->get_record('facetoface_sessions_dates', array('sessionid'=>$session->id)); // AB
-            $starttime = new DateTime(date('c', $start->timestart)); // AB
-            $interval = $starttime->diff($currenttime); // AB
-			$diffdays =  $interval->format('%a'); // AB
-			//print_error('session->id: '.$session->id);
-			$disableddaysDB = $DB->get_record('facetoface', array('id'=>$session->id)); // AB
-            //print_error('var dump : '.var_dump($disableddaysDB));
-			$disableddays = $disableddaysDB->disablewithindays; // AB
-			//print_error('disableddays being printed here '.$disableddays);
+            
+            $currenttime = new DateTime(date('c', time())); 
+            $start = $DB->get_record('facetoface_sessions_dates', array('sessionid'=>$session->id)); 
+            $starttime = new DateTime(date('c', $start->timestart)); 
+            $interval = $starttime->diff($currenttime); 
+			$diffdays =  $interval->format('%a'); 
+			$disableddaysDB = $DB->get_record('facetoface', array('id'=>$session->id)); 
+			$disableddays = $disableddaysDB->disablewithindays; 
 			
             // If booked less than capacity, book some new users
             if ($booked < $capacity) {
@@ -627,25 +622,6 @@ function facetoface_update_attendees($session) {
                     }
                 }
             }
-
-
-/*            // If booked less than capacity, book some new users
-            if ($booked < $capacity) {
-                foreach ($users as $user) {
-                    if ($booked >= $capacity) {
-                        break;
-                    }
-
-                    if ($user->statuscode == MDL_F2F_STATUS_WAITLISTED) {
-
-                        if (!facetoface_user_signup($session, $facetoface, $course, $user->discountcode, $user->notificationtype, MDL_F2F_STATUS_BOOKED, $user->id)) {
-                            // rollback_sql();
-                            return false;
-                        }
-                        $booked++;
-                    }
-                }
-            } */
         }
     }
 

@@ -173,7 +173,6 @@ function print_session_list($courseid, $facetofaceid, $location) {
     }
 
     // Upcoming sessions
-    // AB
     echo $OUTPUT->heading(get_string('upcomingsessions', 'facetoface'));
     if (empty($upcomingarray) && empty($upcomingtbdarray)) {
         print_string('noupcoming', 'facetoface');
@@ -190,7 +189,6 @@ function print_session_list($courseid, $facetofaceid, $location) {
     // Previous sessions
     if (!empty($previousarray)) {
         echo $OUTPUT->heading(get_string('previoussessions', 'facetoface'));
-        // AB
 	echo $f2f_renderer->print_session_list_table($customfields, $previousarray, $viewattendees, $editsessions);
     }
 }

@@ -122,7 +122,6 @@ if ($fromform = $mform->get_data()) { // Form submitted
         $fromform->discountcost = 0;
     }
 
-    //AB
     if(empty($fromform->disablenewenrolldays))
     {
         $fromform->disablenewenrolldays = 0;
@@ -157,7 +156,6 @@ if ($fromform = $mform->get_data()) { // Form submitted
     $todb->normalcost = $fromform->normalcost;
     $todb->discountcost = $fromform->discountcost;
 
-	//AB
     $todb->details = $fromform->details;
     $todb->disablenewenrolldays = $fromform->disablenewenrolldays;
     $todb->disableoption = $fromform->disableoption;

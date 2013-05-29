@@ -697,7 +697,6 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2013010400, 'facetoface');
     }
 
-    //AB
     if ($oldversion < 2012051100) {
 
         $table = new xmldb_table('facetoface');

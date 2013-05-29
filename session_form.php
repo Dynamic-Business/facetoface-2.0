@@ -125,7 +125,6 @@ class mod_facetoface_session_form extends moodleform {
         $mform->setType('details_editor', PARAM_RAW);
         $mform->addHelpButton('details_editor', 'details', 'facetoface');
 
-        //AB
         $mform->addElement('checkbox', 'disableoption', get_string('disableoption','facetoface'));
         $mform->setType('disableoption', PARAM_INT);
         $mform->setDefault('disableoption', 0);

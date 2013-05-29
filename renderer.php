@@ -140,15 +140,8 @@ class mod_facetoface_renderer extends plugin_renderer_base {
                 $options .= html_writer::link('cancelsignup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('cancelbooking', 'facetoface'), array('title' => get_string('cancelbooking', 'facetoface')));
             }
             elseif (!$sessionstarted and !$bookedsession) {
-                //$options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
-		//AB
-                //$options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
-		
 		$currenttime = new DateTime(date('c', time()));
                 $start = $DB->get_record('facetoface_sessions_dates', array('sessionid'=>$session->id));
-		//echo ($start->timestart); // AB
-		//var_dump($start); // AB
-		//echo("sessionid ="); // AB
                 $starttime = new DateTime(date('c', $start->timestart));
                 $interval = $starttime->diff($currenttime);
                 $diffdays =  $interval->format('%a');
@@ -162,15 +155,11 @@ class mod_facetoface_renderer extends plugin_renderer_base {
                         {
                                 $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
                         }
-                         
                 }
                 else
                 {
                         $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
                 }
-		
-
-
 	    }
             if (empty($options)) {
                 $options = get_string('none', 'facetoface');
