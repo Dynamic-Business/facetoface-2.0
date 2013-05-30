@@ -122,10 +122,10 @@ if ($fromform = $mform->get_data()) { // Form submitted
         $fromform->discountcost = 0;
     }
 
-    if(empty($fromform->disablenewenrolldays))
-    {
+    if (empty($fromform->disablenewenrolldays)) {
         $fromform->disablenewenrolldays = 0;
     }
+
     if (empty($fromform->disableoption))
     {
         $fromform->disableoption = 0;
@@ -242,7 +242,6 @@ elseif ($session != null) { // Edit mode
     $toform->discountcost = $session->discountcost;
 
     $toform->details = $session->details;
-    //Am
     $toform->disableoption = $session->disableoption;
     $toform->disablenewenrolldays = $session->disablenewenrolldays;
 

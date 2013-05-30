@@ -702,8 +702,8 @@ $string['disablewithindays'] = 'Days before a session starts';
 $string['disablewithindays_help'] = 'Set how many days before a session starts';
 
 $string['disableoption'] = 'Disable New Enrollment';
-$string['disableoption_help'] = 'Disable a new enrollment option when within X days of a session';
+$string['disableoption_help'] = 'Disable a new enrollment option when within X days of a session. 0 day means an user will not be enrolled on the same day the session is ';
 $string['disablenewenrolldays'] = 'Days before a session starts';
-$string['disablenewenrolldays_help'] = 'Set how many days before a session starts';
+$string['disablenewenrolldays_help'] = 'Set how many days before a session starts. 0 day means an user will not be enrolled on the same day the session is';
 $string['showall'] = 'Show all';
 

@@ -561,11 +561,13 @@ function facetoface_update_calendar_entries($session, $facetoface = null){
  */
 function facetoface_update_attendees($session) {
     global $USER, $DB;
+
     // Get facetoface
     $facetoface = $DB->get_record('facetoface', array('id' => $session->facetoface));
 
     // Get course
     $course = $DB->get_record('course', array('id' => $facetoface->course));
+
     // Update user status'
     $users = facetoface_get_attendees($session->id);
 
@@ -596,15 +598,15 @@ function facetoface_update_attendees($session) {
                     $booked++;
                 }
             }
-            
+ 
             $currenttime = new DateTime(date('c', time())); 
             $start = $DB->get_record('facetoface_sessions_dates', array('sessionid'=>$session->id)); 
             $starttime = new DateTime(date('c', $start->timestart)); 
-            $interval = $starttime->diff($currenttime); 
-			$diffdays =  $interval->format('%a'); 
-			$disableddaysDB = $DB->get_record('facetoface', array('id'=>$session->id)); 
-			$disableddays = $disableddaysDB->disablewithindays; 
-			
+            $interval = $starttime->diff($currenttime);
+            $diffdays =  $interval->format('%a'); 
+            $disableddaysDB = $DB->get_record('facetoface', array('id'=>$session->id)); 
+            $disableddays = $disableddaysDB->disablewithindays; 
+
             // If booked less than capacity, book some new users
             if ($booked < $capacity) {
                 foreach ($users as $user) {
@@ -613,8 +615,7 @@ function facetoface_update_attendees($session) {
                     }
 
                     if (($user->statuscode == MDL_F2F_STATUS_WAITLISTED)&($diffdays>$disableddays)) {
-
-						if (!facetoface_user_signup($session, $facetoface, $course, $user->discountcode, $user->notificationtype, MDL_F2F_STATUS_BOOKED, $user->id)) {
+                        if (!facetoface_user_signup($session, $facetoface, $course, $user->discountcode, $user->notificationtype, MDL_F2F_STATUS_BOOKED, $user->id)) {
                             // rollback_sql();
                             return false;
                         }
@@ -624,7 +625,6 @@ function facetoface_update_attendees($session) {
             }
         }
     }
-
     return $session->id;
 }
 
@@ -1643,6 +1643,7 @@ function facetoface_write_activity_attendance(&$worksheet, $startingrow, $faceto
             }
         }
     }
+
     return $i;
 }
 

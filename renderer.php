@@ -149,18 +149,16 @@ class mod_facetoface_renderer extends plugin_renderer_base {
                 $disableddays = $disableddaysDB->disablenewenrolldays;
                 $disableoption = $disableddaysDB->disableoption;
                 
-                if($disableoption)
-                {
-                        if($diffdays > $disableddays)
-                        {
-                                $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
-                        }
+                if($disableoption) {
+                    if($diffdays > $disableddays) {
+                        $options .= new moodle_url('signup.php', array('s' => $session->id, 'backtoallsessions' => $session->facetoface), get_string('signup', 'facetoface'));
+                    }
                 }
-                else
-                {
-                        $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
+                else {
+                    $options .= new moodle_url('signup.php', array('s' => $session->id, 'backtoallsessions' => $session-facetoface), get_string('signup', 'facetoface'));
                 }
 	    }
+
             if (empty($options)) {
                 $options = get_string('none', 'facetoface');
             }
@@ -184,7 +182,7 @@ class mod_facetoface_renderer extends plugin_renderer_base {
         }
 
         $output .= html_writer::table($table);
-       
+
         return $output;
     }
 }

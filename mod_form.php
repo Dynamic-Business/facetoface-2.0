@@ -140,7 +140,7 @@ class mod_facetoface_mod_form extends moodleform_mod {
         $mform->addHelpButton('disableautoenroll', 'disableautoenroll', 'facetoface');
         
         $disableperiod = array();
-        for ($i=0; $i<=365; $i += 1) {
+        for ($i=0; $i<=60; $i += 1) {
                 $disableperiod[$i] = $i;
         }
 
