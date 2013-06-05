@@ -614,7 +614,7 @@ function facetoface_update_attendees($session) {
                         break;
                     }
 
-                    if (($user->statuscode == MDL_F2F_STATUS_WAITLISTED)&($diffdays>$disableddays)) {
+                    if (($user->statuscode == MDL_F2F_STATUS_WAITLISTED) && ($diffdays>$disableddays)) {
                         if (!facetoface_user_signup($session, $facetoface, $course, $user->discountcode, $user->notificationtype, MDL_F2F_STATUS_BOOKED, $user->id)) {
                             // rollback_sql();
                             return false;
@@ -1453,8 +1453,7 @@ function facetoface_write_activity_attendance(&$worksheet, $startingrow, $faceto
                 s.facetoface = ?
               AND d.sessionid = s.id
                    $locationcondition
-                   ORDER BY s.datetimeknown, d.timestart"; 
-
+                   ORDER BY s.datetimeknown, d.timestart";
 
     $sessions = $DB->get_records_sql($sql, array_merge(array($facetofaceid), $locationparam));
 

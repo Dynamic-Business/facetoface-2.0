@@ -9,7 +9,7 @@ class mod_facetoface_renderer extends plugin_renderer_base {
      */
     public function print_session_list_table($customfields, $sessions, $viewattendees, $editsessions) {
         global $DB;
-	$output = '';
+        $output = '';
 
         $tableheader = array();
         foreach ($customfields as $field) {
@@ -33,7 +33,7 @@ class mod_facetoface_renderer extends plugin_renderer_base {
         $table = new html_table();
         $table->summary = get_string('previoussessionslist', 'facetoface');
         $table->head = $tableheader;
-	$table->width = '100%';
+        $table->attributes['class'] = 'sessionlisttable';
         $table->data = array();
 
         foreach ($sessions as $session) {
@@ -147,14 +147,13 @@ class mod_facetoface_renderer extends plugin_renderer_base {
                 $diffdays =  $interval->format('%a');
                 $disableddaysDB = $DB->get_record('facetoface_sessions', array('id'=>$session->id));
                 $disableddays = $disableddaysDB->disablenewenrolldays;
-                $disableoption = $disableddaysDB->disableoption;
+                $disablesignup = $disableddaysDB->disablesignup;
                 
-                if($disableoption) {
+                if ($disablesignup) {
                     if($diffdays > $disableddays) {
                         $options .= new moodle_url('signup.php', array('s' => $session->id, 'backtoallsessions' => $session->facetoface), get_string('signup', 'facetoface'));
                     }
-                }
-                else {
+                } else {
                     $options .= new moodle_url('signup.php', array('s' => $session->id, 'backtoallsessions' => $session-facetoface), get_string('signup', 'facetoface'));
                 }
 	    }

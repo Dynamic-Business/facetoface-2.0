@@ -702,7 +702,6 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         $table = new xmldb_table('facetoface');
         $field = new xmldb_field('disablewithindays', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'approvalreqd');
 
-
         if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
         }
@@ -717,18 +716,15 @@ function xmldb_facetoface_upgrade($oldversion=0) {
                 $dbman->add_field($table, $field);
         }
 
-        // facetoface savepoint reached
-        upgrade_mod_savepoint(true, 2012051200, 'facetoface');
-
         $table = new xmldb_table('facetoface_sessions');
-        $field = new xmldb_field('disableoption', XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, null, null, null, 'disablenewenrolldays');
+        $field = new xmldb_field('disablesignup', XMLDB_TYPE_INTEGER, '1', XMLDB_UNSIGNED, null, null, null, 'disablenewenrolldays');
 
         if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
         }
 
         // facetoface savepoint reached
-        upgrade_mod_savepoint(true, 2012053002, 'facetoface');
+        upgrade_mod_savepoint(true, 2013010401, 'facetoface');
     }
 
     return $result;
