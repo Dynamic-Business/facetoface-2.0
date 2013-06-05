@@ -599,11 +599,8 @@ function facetoface_update_attendees($session) {
                 }
             }
  
-            $currenttime = new DateTime(date('c', time())); 
-            $start = $DB->get_record('facetoface_sessions_dates', array('sessionid'=>$session->id)); 
-            $starttime = new DateTime(date('c', $start->timestart)); 
-            $interval = $starttime->diff($currenttime);
-            $diffdays =  $interval->format('%a'); 
+            $sessionstartdate = facetoface_get_session_dates($session->id);
+            $diffdays = ceil((abs($sessionstartdate[0]->timestart - time()))/86400);  
             $disableddaysDB = $DB->get_record('facetoface', array('id'=>$session->id)); 
             $disableddays = $disableddaysDB->disablewithindays; 
 
