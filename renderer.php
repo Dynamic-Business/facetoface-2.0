@@ -147,10 +147,12 @@ class mod_facetoface_renderer extends plugin_renderer_base {
 
                 if ($disablesignup) {
                     if($diffdays > $disableddays) {
-                        $options .= new moodle_url('signup.php', array('s' => $session->id, 'backtoallsessions' => $session->facetoface), get_string('signup', 'facetoface'));
+                        //$options .= new moodle_url('signup.php', array('s' => $session->id, 'backtoallsessions' => $session->facetoface), get_string('signup', 'facetoface'));
+                        $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
                     }
                 } else {
-                    $options .= new moodle_url('signup.php', array('s' => $session->id, 'backtoallsessions' => $session-facetoface), get_string('signup', 'facetoface'));
+                    // $options .= new moodle_url('signup.php', array('s' => $session->id, 'backtoallsessions' => $session->facetoface), get_string('signup', 'facetoface'));
+                    $options .= html_writer::link('signup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('signup', 'facetoface'));
                 }
 	    }
 

@@ -697,8 +697,7 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2013010400, 'facetoface');
     }
 
-    if ($oldversion < 2013010401) {
-
+    if ($oldversion < 2013010400) {
         $table = new xmldb_table('facetoface');
         $field = new xmldb_field('disablewithindays', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'approvalreqd');
 
@@ -707,7 +706,7 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         }
 
         // facetoface savepoint reached
-        upgrade_mod_savepoint(true, 2012051100, 'facetoface');
+        //upgrade_mod_savepoint(true, 2012051100, 'facetoface');
 
         $table = new xmldb_table('facetoface_sessions');
         $field = new xmldb_field('disablenewenrolldays', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL, null, '0', 'timemodified');
@@ -724,7 +723,7 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         }
 
         // facetoface savepoint reached
-        upgrade_mod_savepoint(true, 2013010401, 'facetoface');
+        upgrade_mod_savepoint(true, 2013010400, 'facetoface');
     }
 
     return $result;

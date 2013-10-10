@@ -802,7 +802,7 @@ function facetoface_email_substitutions($msg, $facetofacename, $reminderperiod, 
 
     // Custom session fields (they look like "session:shortname" in the templates)
     $customfields = facetoface_get_session_customfields();
-    $customdata = $DB->get_records('facetoface_session_data', array('sessionid' => $data->id), '', 'fieldid, data');
+    $customdata = $DB->get_records('facetoface_session_data', array('sessionid' => $sessionid), '', 'fieldid, data');
     foreach ($customfields as $field) {
         $placeholder = "[session:{$field->shortname}]";
         $value = '';
@@ -3230,8 +3230,8 @@ function facetoface_add_session_to_calendar($session, $facetoface, $calendartype
 
         if ($calendartype == 'user' && $eventtype == 'booking') {
             //Check for and Delete the 'created' calendar event to reduce multiple entries for the same event
-            $DB->delete_records('event', array('name' => $shortname, 'userid' => $userid,
-                'instance' => $session->facetoface, 'eventtype' => 'facetofacesession'));
+            $select = $DB->sql_compare_text('name')." = ? AND userid = ? AND instance = ? AND eventtype = ?";
+            $DB->delete_records_select('event', $select, array($shortname, $userid, $session->facetoface, 'facetofacesession'));
         }
 
         $result = $result && $DB->insert_record('event', $newevent);
