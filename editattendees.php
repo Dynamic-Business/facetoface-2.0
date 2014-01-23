@@ -57,16 +57,37 @@ if (optional_param('add', false, PARAM_BOOL) && confirm_sesskey()) {
             // Make sure that the user is enroled in the course
             if (!has_capability('moodle/course:view', $context, $adduser)) {
                 $user = $DB->get_record('user', array('id' => $adduser));
-                if (!enrol_try_internal_enrol($course->id, $user->id)) {
+                if (!enrol_try_internal_enrol($course->id, $user->id, 5)) {
                     $errors[] = get_string('error:enrolmentfailed', 'facetoface', fullname($user));
                     $errors[] = get_string('error:addattendee', 'facetoface', fullname($user));
                     continue; // don't sign the user up
                 }
             }
 
-            if (facetoface_get_user_submissions($facetoface->id, $adduser)) {
-                $erruser = $DB->get_record('user', array('id' => $adduser),'id, firstname, lastname');
-                $errors[] = get_string('error:addalreadysignedupattendee', 'facetoface', fullname($erruser));
+            $sql = "SELECT su.id, s.facetoface, s.id as sessionid, su.userid, 0 as mailedconfirmation, su.mailedreminder, su.discountcode, ss.timecreated, ss.timecreated as timegraded, s.timemodified, 0 as timecancelled, su.notificationtype, ss.statuscode, loc.data As 'location', room.data As 'room', venue.data As 'venue', FROM_UNIXTIME(sd.timestart,'%d-%m-%y %h:%m') as 'start', FROM_UNIXTIME(sd.timefinish,'%d-%m-%y %h:%m')  as 'end'
+                FROM {facetoface_sessions} s
+                JOIN {facetoface_signups} su ON su.sessionid = s.id
+                JOIN {facetoface_signups_status} ss ON su.id = ss.signupid
+                JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 1) loc ON loc.sessionid = s.id
+                JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 2) room ON room.sessionid = s.id
+                JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 3) venue ON  venue.sessionid = s.id
+                JOIN {facetoface_sessions_dates} sd ON sd.sessionid = s.id
+                WHERE ss.statuscode >= ? AND ss.statuscode < ?
+                AND s.facetoface = ? AND su.userid = ?
+                ORDER BY s.timecreated";
+
+            $submissions = $DB->get_record_sql($sql, array(MDL_F2F_STATUS_REQUESTED,MDL_F2F_STATUS_NO_SHOW,$facetoface->id,$adduser));
+
+            if ($submissions) {
+                $erruser = $DB->get_record('user', array('id'=>$adduser),'id, firstname, lastname');
+                $err_string = get_string('error:addalreadysignedupattendee', 'facetoface', fullname($erruser));
+                $err_string .= "Location: " . $submissions->location . "<br>";
+                $err_string .= "Room: " . $submissions->room . "<br>";
+                $err_string .= "Venue: " . $submissions->venue . "<br>";
+                $err_string .= "Start: " . $submissions->start . "<br>";
+                $err_string .= "End: " . $submissions->end;
+                $errors[] = $err_string;
+
             } else {
                 if (!facetoface_session_has_capacity($session, $context)) {
                     $errors[] = get_string('full', 'facetoface');
