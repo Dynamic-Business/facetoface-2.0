@@ -74,6 +74,7 @@ if (optional_param('add', false, PARAM_BOOL) && confirm_sesskey()) {
                 JOIN {facetoface_sessions_dates} sd ON sd.sessionid = s.id
                 WHERE ss.statuscode >= ? AND ss.statuscode < ?
                 AND s.facetoface = ? AND su.userid = ?
+                AND ss.superceded = 0
                 ORDER BY s.timecreated";
 
             $submissions = $DB->get_record_sql($sql, array(MDL_F2F_STATUS_REQUESTED,MDL_F2F_STATUS_NO_SHOW,$facetoface->id,$adduser));
