@@ -68,9 +68,9 @@ if (optional_param('add', false, PARAM_BOOL) && confirm_sesskey()) {
                 FROM {facetoface_sessions} s
                 JOIN {facetoface_signups} su ON su.sessionid = s.id
                 JOIN {facetoface_signups_status} ss ON su.id = ss.signupid
-                JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 1) loc ON loc.sessionid = s.id
-                JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 2) room ON room.sessionid = s.id
-                JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 3) venue ON  venue.sessionid = s.id
+                LEFT JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 1) loc ON loc.sessionid = s.id
+                LEFT JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 2) room ON room.sessionid = s.id
+                LEFT JOIN (SELECt * FROM {facetoface_session_data} WHERE fieldid = 3) venue ON  venue.sessionid = s.id
                 JOIN {facetoface_sessions_dates} sd ON sd.sessionid = s.id
                 WHERE ss.statuscode >= ? AND ss.statuscode < ?
                 AND s.facetoface = ? AND su.userid = ?
@@ -82,7 +82,7 @@ if (optional_param('add', false, PARAM_BOOL) && confirm_sesskey()) {
             if ($submissions) {
                 $erruser = $DB->get_record('user', array('id'=>$adduser),'id, firstname, lastname');
                 $err_string = get_string('error:addalreadysignedupattendee', 'facetoface', fullname($erruser));
-                $err_string .= "Location: " . $submissions->location . "<br>";
+                $err_string .= "<br>Location: " . $submissions->location . "<br>";
                 $err_string .= "Room: " . $submissions->room . "<br>";
                 $err_string .= "Venue: " . $submissions->venue . "<br>";
                 $err_string .= "Start: " . $submissions->start . "<br>";
