@@ -168,6 +168,21 @@ if ($fromform = $mform->get_data()) { // Form submitted
         $sessionid = $session->id;
 
         $todb->id = $session->id;
+
+        // FIX: copied from below to fix bug where custom fields are changed at the same time as the date. Emails were sent out before the fields
+        // were updated and therefore the field information was wrong.
+        foreach ($customfields as $field) {
+            $fieldname = "custom_$field->shortname";
+            if (!isset($fromform->$fieldname)) {
+                $fromform->$fieldname = ''; // need to be able to clear fields
+            }
+
+            if (!facetoface_save_customfield_value($field->id, $fromform->$fieldname, $sessionid, 'session')) {
+                $transaction->force_transaction_rollback();
+                print_error('error:couldnotsavecustomfield', 'facetoface', $returnurl);
+            }
+        }
+
         if (!facetoface_update_session($todb, $sessiondates)) {
             $transaction->force_transaction_rollback();
             add_to_log($course->id, 'facetoface', 'update session (FAILED)', "sessions.php?s=$session->id", $facetoface->id, $cm->id);
@@ -186,17 +201,17 @@ if ($fromform = $mform->get_data()) { // Form submitted
             add_to_log($course->id, 'facetoface', 'add session (FAILED)', 'sessions.php?f='.$facetoface->id, $facetoface->id, $cm->id);
             print_error('error:couldnotaddsession', 'facetoface', $returnurl);
         }
-    }
 
-    foreach ($customfields as $field) {
-        $fieldname = "custom_$field->shortname";
-        if (!isset($fromform->$fieldname)) {
-            $fromform->$fieldname = ''; // need to be able to clear fields
-        }
+        foreach ($customfields as $field) {
+            $fieldname = "custom_$field->shortname";
+            if (!isset($fromform->$fieldname)) {
+                $fromform->$fieldname = ''; // need to be able to clear fields
+            }
 
-        if (!facetoface_save_customfield_value($field->id, $fromform->$fieldname, $sessionid, 'session')) {
-            $transaction->force_transaction_rollback();
-            print_error('error:couldnotsavecustomfield', 'facetoface', $returnurl);
+            if (!facetoface_save_customfield_value($field->id, $fromform->$fieldname, $sessionid, 'session')) {
+                $transaction->force_transaction_rollback();
+                print_error('error:couldnotsavecustomfield', 'facetoface', $returnurl);
+            }
         }
     }
 
