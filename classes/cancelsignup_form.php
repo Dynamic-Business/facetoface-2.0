@@ -30,8 +30,29 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2015020900;
-$module->requires  = 2014111003;  // Requires this Moodle version.
-$module->release   = '2.8.0 (Build: 2015012700)'; // User-friendly version number.
-$module->component = 'mod_facetoface';
-$module->maturity  = MATURITY_ALPHA;
+require_once($CFG->dirroot . '/lib/formslib.php');
+
+class mod_facetoface_cancelsignup_form extends moodleform {
+
+    public function definition() {
+        $mform =& $this->_form;
+
+        $mform->addElement('header', 'general', get_string('cancelbooking', 'facetoface'));
+
+        $mform->addElement('hidden', 's', $this->_customdata['s']);
+        $mform->setType('s', PARAM_INT);
+
+        $mform->addElement('hidden', 'backtoallsessions', $this->_customdata['backtoallsessions']);
+        $mform->setType('backtoallsessions', PARAM_INT);
+
+        $mform->addElement('html', get_string('cancellationconfirm', 'facetoface')); // Instructions.
+
+        $mform->addElement('text', 'cancelreason', get_string('cancelreason', 'facetoface'), 'size="60" maxlength="255"');
+        $mform->setType('cancelreason', PARAM_TEXT);
+
+        $buttonarray = array();
+        $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('yes'));
+        $buttonarray[] =& $mform->createElement('cancel', 'cancelbutton', get_string('no'));
+        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+    }
+}
