@@ -50,6 +50,7 @@ if (!$cm = get_coursemodule_from_instance("facetoface", $facetoface->id, $course
 require_course_login($course, true, $cm);
 $context = context_course::instance($course->id);
 require_capability('mod/facetoface:view', $context);
+$contextmodule = context_module::instance($cm->id);
 
 $returnurl = "$CFG->wwwroot/course/view.php?id=$course->id";
 if ($backtoallsessions) {
@@ -136,7 +137,7 @@ if ($fromform = $mform->get_data()) { // Form submitted.
             'context'  => $contextmodule,
             'objectid' => $session->id
         );
-        $event = \mod_facetoface\event\signup::create($params);
+        $event = \mod_facetoface\event\signup_success::create($params);
         $event->add_record_snapshot('facetoface_sessions', $session);
         $event->add_record_snapshot('facetoface', $facetoface);
         $event->trigger();
