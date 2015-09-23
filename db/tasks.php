@@ -30,8 +30,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2015020900;
-$module->requires  = 2014111003;  // Requires this Moodle version.
-$module->release   = '2.8.0 (Build: 2015012700)'; // User-friendly version number.
-$module->component = 'mod_facetoface';
-$module->maturity  = MATURITY_ALPHA;
+$tasks = array(
+    array(
+        'classname' => 'mod_facetoface\task\cron_task',
+        'blocking'  => 0,
+        'minute'    => '*',
+        'hour'      => '1',
+        'day'       => '*',
+        'month'     => '*',
+        'dayofweek' => '*'
+    )
+);
