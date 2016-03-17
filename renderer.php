@@ -159,7 +159,8 @@ class mod_facetoface_renderer extends plugin_renderer_base {
                 $options .= html_writer::link('cancelsignup.php?s='.$session->id.'&backtoallsessions='.$session->facetoface, get_string('cancelbooking', 'facetoface'), array('title' => get_string('cancelbooking', 'facetoface')));
             }
             elseif (!$sessionstarted and !$bookedsession) {
-                $diffdays = ceil((abs(strtotime($sessionrow[0]) - time()))/86400); 
+                $sessiondate = facetoface_get_earliest_session_dates($session->sessiondates);
+                $diffdays = ceil((abs($sessiondate - time()))/86400); 
                 $disableddaysDB = $DB->get_record('facetoface_sessions', array('id'=>$session->id));
                 $disableddays = $disableddaysDB->disablenewenrolldays;
                 $disablesignup = $disableddaysDB->disablesignup;

@@ -2615,6 +2615,18 @@ function facetoface_cm_info_view(cm_info $cm) {
             if (!facetoface_session_has_capacity($session, $contextmodule)) {
                 continue;
             }
+            
+            $earliestdate = facetoface_get_earliest_session_dates($session->sessiondates);
+            
+            $diffdays = ceil((abs($earliestdate - time()))/86400);
+            $disableddays = $session->disablenewenrolldays;
+            $disablesignup = $session->disablesignup;
+            
+            if ($disablesignup) {
+                if($diffdays < $disableddays) {
+                    continue;
+                }
+            }
 
             // Check display count.
             $count++;
@@ -2674,6 +2686,27 @@ function facetoface_cm_info_view(cm_info $cm) {
     }
 
     $cm->set_after_link(html_writer::table($table));
+}
+
+/**
+ * Returns the earliest session time
+ *
+ * @param array  $dates An array of session dates (must have $date->timestart property)
+ * @return string Earliest timestamp
+ */
+function facetoface_get_earliest_session_dates($dates){
+    $time = 0;
+    foreach($dates as $date){
+        if($time === 0){
+            $time = $date->timestart;
+            continue;
+        }
+
+        if($time > $date->timestart){
+            $time = $date->timestart;
+        }
+    }
+    return $time;
 }
 
 /**
