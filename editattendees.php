@@ -70,8 +70,8 @@ $strfacetoface = get_string('modulename', 'facetoface');
 $errors = array();
 
 // Get the user_selector we will need.
-$potentialuserselector = new facetoface_candidate_selector('addselect', array('sessionid' => $session->id));
-$existinguserselector = new facetoface_existing_selector('removeselect', array('sessionid' => $session->id));
+$potentialuserselector = new facetoface_candidate_selector('addselect', array('sessionid' => $session->id, 'extrafields' => array("email")));
+$existinguserselector = new facetoface_existing_selector('removeselect', array('sessionid' => $session->id, 'extrafields' => array("email")));
 
 // Process incoming user assignments.
 if (optional_param('add', false, PARAM_BOOL) && confirm_sesskey()) {
