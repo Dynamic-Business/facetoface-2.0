@@ -3928,6 +3928,22 @@ function facetoface_get_extra_capabilities() {
     return array('moodle/site:viewfullnames');
 }
 
+function facetoface_status_options($withstrings = false) {
+    // Id's are important as they are bits.
+    $options = array(
+        90 => 'partially attended',
+        100 => 'fully attended'
+    );
+
+    if ($withstrings) {
+        foreach ($options as $key => $value) {
+            $options[$key] = get_string('completionstatus_'.$value, 'facetoface');
+        }
+    }
+
+    return $options;
+}
+
 
 /**
  * @param string $feature FEATURE_xx constant for requested feature
