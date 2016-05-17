@@ -51,7 +51,7 @@ class mod_facetoface_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $this->add_intro_editor(true);
+        $this->standard_intro_elements(true);
 
         $mform->addElement('text', 'thirdparty', get_string('thirdpartyemailaddress', 'facetoface'), array('size' => '64'));
         $mform->setType('thirdparty', PARAM_EMAIL);
@@ -230,18 +230,11 @@ class mod_facetoface_mod_form extends moodleform_mod {
             $defaultvalues['emailmanagercancellation'] = 1;
         }
 
-
         // Set some completion default data.
-        if (!empty($defaultvalues['completionstatusrequired']) && !is_array($defaultvalues['completionstatusrequired'])) {
+        if (!empty($default_values['completionstatusrequired']) && !is_array($default_values['completionstatusrequired'])) {
             // Unpack values.
-            $cvalues = array();
-            foreach (facetoface_status_options() as $key => $value) {
-                if (($defaultvalues['completionstatusrequired'] & $key) == $key) {
-                    $cvalues[$key] = 1;
-                }
-            }
-
-            $defaultvalues['completionstatusrequired'] = $cvalues;
+            $cvalues = json_decode($default_values['completionstatusrequired'], true);
+            $default_values['completionstatusrequired'] = $cvalues;
         }
     }
 
@@ -276,7 +269,7 @@ class mod_facetoface_mod_form extends moodleform_mod {
         return (!empty($data['completionstatusrequired']));
     }
 
-     function get_data($slashed = true) {
+    function get_data($slashed = true) {
         $data = parent::get_data($slashed);
 
         if (!$data) {
@@ -286,21 +279,19 @@ class mod_facetoface_mod_form extends moodleform_mod {
         // Convert completionstatusrequired to a proper integer, if any.
         $total = 0;
         if (isset($data->completionstatusrequired) && is_array($data->completionstatusrequired)) {
-            foreach (array_keys($data->completionstatusrequired) as $state) {
-                $total |= $state;
-            }
-            $data->completionstatusrequired = $total;
+            $data->completionstatusrequired = json_encode($data->completionstatusrequired);
         }
 
         if (!empty($data->completionunlocked)) {
             // Turn off completion settings if the checkboxes aren't ticked.
             $autocompletion = isset($data->completion) && $data->completion == COMPLETION_TRACKING_AUTOMATIC;
 
-            if (!(isset($data->completionstatusrequired) && $autocompletion)) {
+            if (isset($data->completionstatusrequired) && $autocompletion) {
+                // Do nothing: completionstatusrequired has been already converted
+                //             into a correct integer representation.
+            } else {
                 $data->completionstatusrequired = null;
             }
-            // Else do nothing: completionstatusrequired has been already converted
-            //             into a correct integer representation.
 
             if (!empty($data->completionscoredisabled) || !$autocompletion) {
                 $data->completionscorerequired = null;
