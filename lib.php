@@ -1902,7 +1902,9 @@ function facetoface_user_signup($session, $facetoface, $course, $discountcode,
             );
 
             $cc = new completion_completion($ccdetails);
+            $cc->mark_enrolled($timenow);
             $cc->mark_inprogress($timenow);
+
         }
     }
 
