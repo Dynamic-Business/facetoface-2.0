@@ -2027,7 +2027,7 @@ function facetoface_send_request_notice($facetoface, $session, $userid) {
  * @returns integer ID of newly created signup status, or false
  *
  */
-function facetoface_update_signup_status($signupid, $statuscode, $createdby, $note='', $grade=null) {
+function facetoface_update_signup_status($signupid, $statuscode, $createdby, $note='', $grade=NULL) {
     global $DB;
     $timenow = time();
 
@@ -2041,15 +2041,21 @@ function facetoface_update_signup_status($signupid, $statuscode, $createdby, $no
     $signupstatus->superceded = 0;
     $signupstatus->mailed = 0;
 
-    $transaction = $DB->start_delegated_transaction();
-
     if ($statusid = $DB->insert_record('facetoface_signups_status', $signupstatus)) {
-
-        // Mark any previous signup_statuses as superceded.
+        // mark any previous signup_statuses as superceded
         $where = "signupid = ? AND ( superceded = 0 OR superceded IS NULL ) AND id != ?";
         $whereparams = array($signupid, $statusid);
         $DB->set_field_select('facetoface_signups_status', 'superceded', 1, $where, $whereparams);
-        $transaction->allow_commit();
+
+        // Check for completions.
+        $sql = "SELECT f2f.id, f2f.course, f2fs.userid
+                FROM {facetoface_signups} f2fs
+                    LEFT JOIN {facetoface_sessions} f2fses ON (f2fses.id = f2fs.sessionid)
+                    LEFT JOIN {facetoface} f2f ON (f2f.id = f2fses.facetoface)
+                WHERE f2fs.id = ?";
+
+        $status = $DB->get_record_sql($sql, array($signupid));
+        facetoface_set_completion($status, $status->userid, COMPLETION_UNKNOWN);
 
         return $statusid;
     } else {
