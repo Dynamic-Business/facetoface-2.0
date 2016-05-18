@@ -130,7 +130,17 @@ function facetoface_get_status($statuscode) {
     return $string;
 }
 
-
+/**
+ * Obtains the automatic completion state for this face to face activity based on any conditions
+ * in face to face settings.
+ *
+ * @param object $course Course
+ * @param object $cm Course-module
+ * @param int $userid User ID
+ * @param bool $type Type of comparison (or/and; can be used as return value if no conditions)
+ * @return bool True if completed, false if not. (If no conditions, then return
+ *   value depends on comparison type)
+ */
 function facetoface_get_completion_state($course, $cm, $userid, $type) {
     global $DB;
 
@@ -349,6 +359,9 @@ function facetoface_hours_to_minutes($hours) {
  */
 function facetoface_fix_settings($facetoface) {
 
+    if (empty($facetoface->completionstatusrequired)) {
+        $facetoface->completionstatusrequired = null;
+    }    
     if (empty($facetoface->emailmanagerconfirmation)) {
         $facetoface->confirmationinstrmngr = null;
     }

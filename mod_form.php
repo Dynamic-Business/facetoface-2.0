@@ -209,25 +209,25 @@ class mod_facetoface_mod_form extends moodleform_mod {
         $this->add_action_buttons();
     }
 
-    public function data_preprocessing(&$defaultvalues) {
+    public function data_preprocessing(&$default_values) {
 
         // Fix manager emails.
-        if (empty($defaultvalues['confirmationinstrmngr'])) {
-            $defaultvalues['confirmationinstrmngr'] = null;
+        if (empty($default_values['confirmationinstrmngr'])) {
+            $default_values['confirmationinstrmngr'] = null;
         } else {
-            $defaultvalues['emailmanagerconfirmation'] = 1;
+            $default_values['emailmanagerconfirmation'] = 1;
         }
 
-        if (empty($defaultvalues['reminderinstrmngr'])) {
-            $defaultvalues['reminderinstrmngr'] = null;
+        if (empty($default_values['reminderinstrmngr'])) {
+            $default_values['reminderinstrmngr'] = null;
         } else {
-            $defaultvalues['emailmanagerreminder'] = 1;
+            $default_values['emailmanagerreminder'] = 1;
         }
 
-        if (empty($defaultvalues['cancellationinstrmngr'])) {
-            $defaultvalues['cancellationinstrmngr'] = null;
+        if (empty($default_values['cancellationinstrmngr'])) {
+            $default_values['cancellationinstrmngr'] = null;
         } else {
-            $defaultvalues['emailmanagercancellation'] = 1;
+            $default_values['emailmanagercancellation'] = 1;
         }
 
         // Set some completion default data.
