@@ -269,7 +269,16 @@ if ($canviewattendees || $cantakeattendance) {
         foreach ($attendees as $attendee) {
             $data = array();
             $attendeeurl = new moodle_url('/user/view.php', array('id' => $attendee->id, 'course' => $course->id));
-            $data[] = html_writer::link($attendeeurl, format_string(fullname($attendee)));
+
+            // If the record is archived, display this by the name
+            if($archived = $DB->record_exists('facetoface_signups', array('id'=>$attendee->submissionid,'archived'=>1))){
+                $name_display = fullname($attendee) . " (attendance archived)";
+            }else{
+                $name_display = fullname($attendee);
+            }
+            
+
+            $data[] = html_writer::link($attendeeurl, format_string($name_display));
 
             if ($takeattendance) {
 
@@ -278,7 +287,11 @@ if ($canviewattendees || $cantakeattendance) {
 
                 $optionid = 'submissionid_'.$attendee->submissionid;
                 $status = $attendee->statuscode;
-                $select = html_writer::select($statusoptions, $optionid, $status);
+                $attributes = array();
+                if($archived){
+                    $attributes['disabled'] = 'true';
+                }
+                $select = html_writer::select($statusoptions, $optionid, $status,NULL,$attributes);
                 $data[] = $select;
             } else {
                 if (!get_config(null, 'facetoface_hidecost')) {

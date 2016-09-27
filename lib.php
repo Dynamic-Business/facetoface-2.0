@@ -2390,7 +2390,7 @@ function facetoface_check_manageremail($manageremail) {
  *                     the ID of the signup
  */
 function facetoface_take_attendance($data) {
-    global $USER;
+    global $USER,$DB;
 
     $sessionid = $data->s;
 
@@ -2439,6 +2439,11 @@ function facetoface_take_attendance($data) {
                 default:
                     // This use has not had attendance set: jump to the next item in the foreach loop.
                     continue 2;
+            }
+
+            // Check to ensure the submission id is not archived. If so, move to next item in loop
+            if($DB->record_exists('facetoface_signups', array('id'=>$submissionid,'archived'=>1))){
+                continue ;
             }
 
             facetoface_update_signup_status($submissionid, $value, $USER->id, '', $grade);
@@ -4076,11 +4081,10 @@ function facetoface_archive_completion($userid, $courseid) {
     foreach ($facetofaces as $facetoface) {
 
         // Add an archive flag
-        $params = array('facetofaceid' => $facetoface->id, 'userid' => $userid, 'archived' => 1, 'archived2' => 1);
+        $params = array('facetofaceid' => $facetoface->id, 'userid' => $userid, 'archived' => 1);
         $sql = "UPDATE {facetoface_signups}
                 SET archived = :archived
                 WHERE userid = :userid
-                #AND archived <> :archived2
                 AND EXISTS (SELECT {facetoface_sessions}.id
                             FROM {facetoface_sessions}
                             WHERE {facetoface_sessions}.id = {facetoface_signups}.sessionid
