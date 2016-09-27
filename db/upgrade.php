@@ -765,5 +765,19 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2016051700, 'facetoface');
     }
 
+    if ($oldversion < 2016092600) {
+        // Define field archived to be added to facetoface_signups.
+        $table = new xmldb_table('facetoface_signups');
+        $field = new xmldb_field('archived', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'notificationtype');
+
+        // Conditionally launch add field archived.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Facetoface savepoint reached.
+        upgrade_mod_savepoint(true, 2016092600, 'facetoface');
+    }
+
     return $result;
 }

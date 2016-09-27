@@ -98,6 +98,7 @@
         <FIELD NAME="mailedreminder" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="userid" NEXT="discountcode"/>
         <FIELD NAME="discountcode" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" PREVIOUS="mailedreminder" NEXT="notificationtype"/>
         <FIELD NAME="notificationtype" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" PREVIOUS="discountcode"/>
+        <FIELD NAME="archived" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Has this sign up been archived by the archive completion feature."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="primary key of the table, please edit me" NEXT="sessionid"/>

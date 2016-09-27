@@ -2983,12 +2983,18 @@ function facetoface_ical_escape($text, $converthtml=false) {
  *
  * @param object $facetoface null means all facetoface activities
  * @param int $userid specific user only, 0 mean all (not used here)
+ * @param bool $nullifnone If a single user is specified and $nullifnone is true, a grade item with a null rawgrade will be inserted
  */
-function facetoface_update_grades($facetoface=null, $userid=0) {
+function facetoface_update_grades($facetoface=null, $userid=0, $nullifnone = true) {
     global $DB;
 
-    if ($facetoface != null) {
-            facetoface_grade_item_update($facetoface);
+    if (($facetoface != null) && $userid && $nullifnone) {
+        $grade = new stdClass();
+        $grade->userid   = $userid;
+        $grade->rawgrade = null;
+        facetoface_grade_item_update($facetoface, $grade);
+    } else if ($facetoface != null) {
+        facetoface_grade_item_update($facetoface);
     } else {
         $sql = "SELECT f.*, cm.idnumber as cmidnumber
                   FROM {facetoface} f
@@ -3002,7 +3008,6 @@ function facetoface_update_grades($facetoface=null, $userid=0) {
             $rs->close();
         }
     }
-
     return true;
 }
 
@@ -4050,6 +4055,52 @@ function facetoface_supports($feature) {
         default: return null;
     }
 }
+
+function facetoface_archive_completion($userid, $courseid) {
+    global $DB, $CFG;
+
+    require_once($CFG->dirroot.'/mod/facetoface/lib.php');
+
+    $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
+    $completion = new acc_completion_info($course);
+
+    // All face to face with this course and user
+    $sql = "SELECT f.*
+            FROM {facetoface} f
+            WHERE f.course = :courseid
+            AND EXISTS (SELECT su.id
+                        FROM {facetoface_sessions} s
+                        JOIN {facetoface_signups} su ON su.sessionid = s.id AND su.userid = :userid
+                        WHERE s.facetoface = f.id)";
+    $facetofaces = $DB->get_records_sql($sql, array('courseid' => $courseid, 'userid' => $userid));
+    foreach ($facetofaces as $facetoface) {
+
+        // Add an archive flag
+        $params = array('facetofaceid' => $facetoface->id, 'userid' => $userid, 'archived' => 1, 'archived2' => 1);
+        $sql = "UPDATE {facetoface_signups}
+                SET archived = :archived
+                WHERE userid = :userid
+                #AND archived <> :archived2
+                AND EXISTS (SELECT {facetoface_sessions}.id
+                            FROM {facetoface_sessions}
+                            WHERE {facetoface_sessions}.id = {facetoface_signups}.sessionid
+                            AND {facetoface_sessions}.facetoface = :facetofaceid)";
+        $DB->execute($sql, $params);
+
+        // Reset the grades
+        facetoface_update_grades($facetoface, $userid, true);
+
+        // Set completion to incomplete
+        // Reset viewed
+        $course_module = get_coursemodule_from_instance('facetoface', $facetoface->id, $courseid);
+        $completion->set_module_viewed_reset($course_module, $userid);
+        // And reset completion, in case viewed is not a required condition
+        $completion->update_state($course_module, COMPLETION_INCOMPLETE, $userid);
+        // $completion->invalidatecache($courseid, $userid, true);
+
+    }
+}
+
 
 /*
  * facetoface assignment candidates
